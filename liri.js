@@ -2,11 +2,15 @@ require("dotenv").config();
 
 var keys = require("./keys.js");
 
+var Spotify = require("node-spotify-api")
+
 var spotify = new Spotify(keys.spotify);
 
 var axios = require("axios")
 
 var inquirer = require("inquirer")
+
+var moment = require("moment")
 
 function initiate () {
     inquirer.prompt([
@@ -18,7 +22,7 @@ function initiate () {
         }
     ]).then(function(response){
         if (response.option === "concert-this"){
-
+            concertPrompt()
         }
         else if (response.option === "spotify-this-song"){
             
@@ -32,3 +36,22 @@ function initiate () {
     }) 
 }
 
+function concertPrompt (){
+        
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "artist",
+            message: "Who's concert are planning to go to?",
+            default: "Katy Perry"
+        }
+    ]).then(function (answer){
+        axios.get("https://rest.bandsintown.com/artists/" + answer.artist + "/events?app_id=codingbootcamp").then(function(axiosResponse){
+        console.log("Venue's Name: " + axiosResponse.data[0]["venue"]["name"])
+        console.log("Venue's Location: " + axiosResponse.data[0]["venue"]["city"] + " ," + axiosResponse.data[0]["venue"]["country"])
+        })
+    })
+    
+}
+
+initiate()
