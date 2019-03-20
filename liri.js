@@ -14,32 +14,35 @@ var moment = require("moment")
 
 var fs = require("fs")
 
-function initiate () {
+function initiate() {
     inquirer.prompt([
         {
             type: "list",
             message: "What can I do for you?",
             name: "option",
-            choices: ["concert-this", "spotify-this-song", "movie-this", "do-what-it-says"]
+            choices: ["concert-this", "spotify-this-song", "movie-this", "do-what-it-says", "nothing!"]
         }
-    ]).then(function(response){
-        if (response.option === "concert-this"){
+    ]).then(function (response) {
+        if (response.option === "concert-this") {
             concertPrompt()
         }
-        else if (response.option === "spotify-this-song"){
+        else if (response.option === "spotify-this-song") {
             spotifyPrompt()
         }
-        else if (response.option === "movie-this"){
+        else if (response.option === "movie-this") {
             moviePrompt()
         }
-        else if (response.option === "do-what-it-says"){
-            
+        else if (response.option === "do-what-it-says") {
+            doWhatItSays()
         }
-    }) 
+        else {
+            return
+        }
+    })
 }
 
-function concertPrompt (){
-        
+function concertPrompt() {
+
     inquirer.prompt([
         {
             type: "input",
@@ -47,19 +50,19 @@ function concertPrompt (){
             message: "Who's concert are planning to go to?",
             default: "Katy Perry"
         }
-    ]).then(function (answer){
-        axios.get("https://rest.bandsintown.com/artists/" + answer.artist + "/events?app_id=codingbootcamp").then(function(axiosResponse){
-        console.log("Venue's Name: " + axiosResponse.data[0]["venue"]["name"])
-        console.log("Venue's Location: " + axiosResponse.data[0]["venue"]["city"] + " ," + axiosResponse.data[0]["venue"]["country"])
-        console.log("Date of the Event: " + moment(axiosResponse.data[0]["datetime"]).format("MM/DD/YYYY"))
-        initiate()
+    ]).then(function (answer) {
+        axios.get("https://rest.bandsintown.com/artists/" + answer.artist + "/events?app_id=codingbootcamp").then(function (axiosResponse) {
+            console.log("Venue's Name: " + axiosResponse.data[0]["venue"]["name"])
+            console.log("Venue's Location: " + axiosResponse.data[0]["venue"]["city"] + " ," + axiosResponse.data[0]["venue"]["country"])
+            console.log("Date of the Event: " + moment(axiosResponse.data[0]["datetime"]).format("MM/DD/YYYY"))
+            initiate()
         })
     })
-    
+
 }
 
-function moviePrompt (){
-        
+function moviePrompt() {
+
     inquirer.prompt([
         {
             type: "input",
@@ -67,8 +70,8 @@ function moviePrompt (){
             message: "What movie do you want to watch?",
             default: "Inception"
         }
-    ]).then(function (answer){
-        axios.get("http://www.omdbapi.com/?t=" + answer.movie + "&apikey=trilogy" ).then(function(axiosResponse){
+    ]).then(function (answer) {
+        axios.get("http://www.omdbapi.com/?t=" + answer.movie + "&apikey=trilogy").then(function (axiosResponse) {
             console.log("Title: " + axiosResponse.data["Title"])
             console.log("This movie was released in " + axiosResponse.data["Year"])
             console.log("IMDB rating: " + axiosResponse.data["Ratings"][0]["Value"])
@@ -80,10 +83,10 @@ function moviePrompt (){
             initiate()
         })
     })
-    
+
 }
 
-function spotifyPrompt () {
+function spotifyPrompt() {
     inquirer.prompt([
         {
             type: "input",
@@ -92,13 +95,11 @@ function spotifyPrompt () {
             default: "The Sign"
         }
     ]).then(function (answer) {
-        spotify.search({ type: 'track', query: answer.song, limit: 1 }, function(err, data) {
+        spotify.search({ type: 'track', query: answer.song, limit: 1 }, function (err, data) {
             if (err) {
-              return console.log('Error occurred: ' + err);
+                return console.log('Error occurred: ' + err);
             }
 
-            console.log("=========This is the album object =========")
-            console.log(data["tracks"].items[0].album)
             console.log("Artist: " + data["tracks"].items[0].artists[0].name)
             console.log("Song Name: " + data["tracks"].items[0].name)
             console.log("Preview Link: " + data["tracks"].items[0].album["external_urls"].spotify)
@@ -106,15 +107,27 @@ function spotifyPrompt () {
 
             initiate()
         })
-          
+
     })
 }
 
-function doWhatItSays (){
-    fs.readFile('random.txt', (err, data) => {
+function doWhatItSays() {
+    fs.readFile('random.txt', "utf8" , (err, data) => {
         if (err) throw err;
-        ;
-      });
+        // console.log(data)
+        var dataArr = data.split(",")
+        spotify.search({ type: 'track', query: dataArr[1], limit: 1 }, function (err, data) {
+            if (err) {
+                return console.log('Error occurred: ' + err);
+            }
+            console.log("Artist: " + data["tracks"].items[0].artists[0].name);
+            console.log("Song Name: " + data["tracks"].items[0].name);
+            console.log("Preview Link: " + data["tracks"].items[0].album["external_urls"].spotify);
+            console.log("Album Name: " + data["tracks"].items[0].album.name);
+
+            initiate();
+        });
+    })
 }
 
 
