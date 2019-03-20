@@ -111,7 +111,10 @@ function spotifyPrompt () {
 }
 
 function doWhatItSays (){
-    fs.readFile
+    fs.readFile('random.txt', (err, data) => {
+        if (err) throw err;
+        ;
+      });
 }
 
 
