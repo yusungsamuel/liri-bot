@@ -14,6 +14,8 @@ var moment = require("moment")
 
 var fs = require("fs")
 
+var chalk = require("chalk")
+
 function initiate() {
     inquirer.prompt([
         {
@@ -52,9 +54,9 @@ function concertPrompt() {
         }
     ]).then(function (answer) {
         axios.get("https://rest.bandsintown.com/artists/" + answer.artist + "/events?app_id=codingbootcamp").then(function (axiosResponse) {
-            console.log("Venue's Name: " + axiosResponse.data[0]["venue"]["name"])
-            console.log("Venue's Location: " + axiosResponse.data[0]["venue"]["city"] + " ," + axiosResponse.data[0]["venue"]["country"])
-            console.log("Date of the Event: " + moment(axiosResponse.data[0]["datetime"]).format("MM/DD/YYYY"))
+            console.log(chalk.bold("Venue's Name: ") + axiosResponse.data[0]["venue"]["name"])
+            console.log(chalk.bold("Venue's Location: ") + axiosResponse.data[0]["venue"]["city"] + " ," + axiosResponse.data[0]["venue"]["country"])
+            console.log(chalk.bold("Date of the Event: ") + moment(axiosResponse.data[0]["datetime"]).format("MM/DD/YYYY"))
             initiate()
         })
     })
@@ -72,14 +74,14 @@ function moviePrompt() {
         }
     ]).then(function (answer) {
         axios.get("http://www.omdbapi.com/?t=" + answer.movie + "&apikey=trilogy").then(function (axiosResponse) {
-            console.log("Title: " + axiosResponse.data["Title"])
-            console.log("This movie was released in " + axiosResponse.data["Year"])
-            console.log("IMDB rating: " + axiosResponse.data["Ratings"][0]["Value"])
-            console.log("Rotten Tomatoes rating: " + axiosResponse.data["Ratings"][1]["Value"])
-            console.log("Country Origin: " + axiosResponse.data["Country"])
-            console.log("Language: " + axiosResponse.data["Language"])
-            console.log("Plot: " + axiosResponse.data["Plot"])
-            console.log("Cast: " + axiosResponse.data["Actors"])
+            console.log(chalk.bold("Title: ") + axiosResponse.data["Title"])
+            console.log(chalk.bold("This movie was released in ") + axiosResponse.data["Year"])
+            console.log(chalk.bold("IMDB rating: ") + axiosResponse.data["Ratings"][0]["Value"])
+            console.log(chalk.bold("Rotten Tomatoes rating: ") + axiosResponse.data["Ratings"][1]["Value"])
+            console.log(chalk.bold("Country Origin: ") + axiosResponse.data["Country"])
+            console.log(chalk.bold("Language: ") + axiosResponse.data["Language"])
+            console.log(chalk.bold("Plot: ") + axiosResponse.data["Plot"])
+            console.log(chalk.bold("Cast: ") + axiosResponse.data["Actors"])
             initiate()
         })
     })
@@ -100,10 +102,10 @@ function spotifyPrompt() {
                 return console.log('Error occurred: ' + err);
             }
 
-            console.log("Artist: " + data["tracks"].items[0].artists[0].name)
-            console.log("Song Name: " + data["tracks"].items[0].name)
-            console.log("Preview Link: " + data["tracks"].items[0].album["external_urls"].spotify)
-            console.log("Album Name: " + data["tracks"].items[0].album.name)
+            console.log(chalk.bold("Artist: ") + data["tracks"].items[0].artists[0].name)
+            console.log(chalk.bold("Song Name: ") + data["tracks"].items[0].name)
+            console.log(chalk.bold("Preview Link: ") + data["tracks"].items[0].album["external_urls"].spotify)
+            console.log(chalk.bold("Album Name: ") + data["tracks"].items[0].album.name)
 
             initiate()
         })
@@ -112,7 +114,7 @@ function spotifyPrompt() {
 }
 
 function doWhatItSays() {
-    fs.readFile('random.txt', "utf8" , (err, data) => {
+    fs.readFile('random.txt', "utf8", (err, data) => {
         if (err) throw err;
         // console.log(data)
         var dataArr = data.split(",")
@@ -120,10 +122,10 @@ function doWhatItSays() {
             if (err) {
                 return console.log('Error occurred: ' + err);
             }
-            console.log("Artist: " + data["tracks"].items[0].artists[0].name);
-            console.log("Song Name: " + data["tracks"].items[0].name);
-            console.log("Preview Link: " + data["tracks"].items[0].album["external_urls"].spotify);
-            console.log("Album Name: " + data["tracks"].items[0].album.name);
+            console.log(chalk.bold("Artist: ") + data["tracks"].items[0].artists[0].name);
+            console.log(chalk.bold("Song Name: ") + data["tracks"].items[0].name);
+            console.log(chalk.bold("Preview Link: ") + data["tracks"].items[0].album["external_urls"].spotify);
+            console.log(chalk.bold("Album Name: ") + data["tracks"].items[0].album.name);
 
             initiate();
         });
