@@ -28,7 +28,7 @@ function initiate () {
             
         }
         else if (response.option === "movie-this"){
-            
+            moviePrompt()
         }
         else if (response.option === "do-what-it-says"){
             
@@ -53,6 +53,33 @@ function concertPrompt (){
         })
     })
     
+}
+
+function moviePrompt (){
+        
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "movie",
+            message: "What movie do you want to watch?",
+            default: "Inception"
+        }
+    ]).then(function (answer){
+        axios.get("http://www.omdbapi.com/?t=" + answer.movie + "&apikey=trilogy" ).then(function(axiosResponse){
+            console.log("Title: " + axiosResponse.data["Title"])
+            console.log("This movie was released in " + axiosResponse.data["Year"])
+            console.log("IMDB rating: " + axiosResponse.data["Ratings"][0]["Value"])
+            console.log("Rotten Tomatoes rating: " + axiosResponse.data["Ratings"][1]["Value"])
+            console.log("Country Origin: " + axiosResponse.data["Country"])
+            console.log("Language: " + axiosResponse.data["Language"])
+            console.log("Plot: " + axiosResponse.data["Plot"])
+            console.log("Cast: " + axiosResponse.data["Actors"])
+        })
+    })
+    
+}
+
+function spotifyPrompt () {
 }
 
 initiate()
