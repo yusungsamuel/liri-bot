@@ -25,7 +25,7 @@ function initiate () {
             concertPrompt()
         }
         else if (response.option === "spotify-this-song"){
-            
+            spotifyPrompt()
         }
         else if (response.option === "movie-this"){
             moviePrompt()
@@ -80,6 +80,22 @@ function moviePrompt (){
 }
 
 function spotifyPrompt () {
+    inquirer.prompt([
+        {
+            type: "input",
+            message: "What song are you looking for?",
+            name: "song",
+            default: "The Sign"
+        }
+    ]).then(function (answer) {
+        spotify.search({ type: 'track', query: answer.song, limit: 1 }, function(err, data) {
+            if (err) {
+              return console.log('Error occurred: ' + err);
+            }
+            console.log(data["tracks"].items[0].album)
+        })
+          
+    })
 }
 
 initiate()
