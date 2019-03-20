@@ -12,6 +12,8 @@ var inquirer = require("inquirer")
 
 var moment = require("moment")
 
+var fs = require("fs")
+
 function initiate () {
     inquirer.prompt([
         {
@@ -50,6 +52,7 @@ function concertPrompt (){
         console.log("Venue's Name: " + axiosResponse.data[0]["venue"]["name"])
         console.log("Venue's Location: " + axiosResponse.data[0]["venue"]["city"] + " ," + axiosResponse.data[0]["venue"]["country"])
         console.log("Date of the Event: " + moment(axiosResponse.data[0]["datetime"]).format("MM/DD/YYYY"))
+        initiate()
         })
     })
     
@@ -74,6 +77,7 @@ function moviePrompt (){
             console.log("Language: " + axiosResponse.data["Language"])
             console.log("Plot: " + axiosResponse.data["Plot"])
             console.log("Cast: " + axiosResponse.data["Actors"])
+            initiate()
         })
     })
     
@@ -92,10 +96,23 @@ function spotifyPrompt () {
             if (err) {
               return console.log('Error occurred: ' + err);
             }
+
+            console.log("=========This is the album object =========")
             console.log(data["tracks"].items[0].album)
+            console.log("Artist: " + data["tracks"].items[0].artists[0].name)
+            console.log("Song Name: " + data["tracks"].items[0].name)
+            console.log("Preview Link: " + data["tracks"].items[0].album["external_urls"].spotify)
+            console.log("Album Name: " + data["tracks"].items[0].album.name)
+
+            initiate()
         })
           
     })
 }
+
+function doWhatItSays (){
+    fs.readFile
+}
+
 
 initiate()
