@@ -38,7 +38,7 @@ function initiate() {
             doWhatItSays()
         }
         else {
-            return
+            console.log()
         }
     })
 }
